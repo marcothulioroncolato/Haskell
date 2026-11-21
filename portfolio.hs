@@ -1,4 +1,4 @@
-{-# LANGUAGE ScopedTypeVariables #-}
+
 
 module Main (main) where
 
@@ -9,9 +9,6 @@ import Text.Printf (printf)
 import Control.Exception (evaluate)
 import GHC.IO.Encoding (setLocaleEncoding, utf8)
 
--- ============================================================
--- DADOS DE EXEMPLO (enunciado)
--- ============================================================
 
 petr4Vetor :: Array Int Double
 petr4Vetor = array (1,5) [(1,38.20), (2,38.80), (3,37.90), (4,39.10), (5,39.60)]
@@ -31,9 +28,7 @@ retornosMediosLista = [0.0092, 0.0068, 0.0086]
 pesosLista :: [Double]
 pesosLista = [0.40, 0.35, 0.25]
 
--- ============================================================
--- PARTE 1 - VETORES (Array Int Double)
--- ============================================================
+
 
 retornosDiarioVetor :: Array Int Double -> Array Int Double
 retornosDiarioVetor precos =
@@ -45,7 +40,6 @@ retornosDiarioVetor precos =
               [ (i, (precos ! (i+1) - precos ! i) / precos ! i)
               | i <- [lo .. hi - 1] ]
 
--- CORREÇÃO: Usando foldl' com índice para evitar alocação de listas intermediárias
 mediaRetornoVetor :: Array Int Double -> Double
 mediaRetornoVetor arr =
   let (lo, hi) = bounds arr
@@ -54,15 +48,11 @@ mediaRetornoVetor arr =
        then 0
        else foldl' (\acc i -> acc + (arr ! i)) 0 [lo..hi] / fromIntegral n
 
--- CORREÇÃO: Usando foldl' com índice (O(1) real, sem listas escondidas)
 produtoEscalarVetor :: Array Int Double -> Array Int Double -> Double
 produtoEscalarVetor w r =
   let (lo, hi) = bounds w
   in foldl' (\acc i -> acc + (w ! i) * (r ! i)) 0 [lo..hi]
 
--- ============================================================
--- PARTE 2 - LISTAS ([Double])
--- ============================================================
 
 retornosDiarioLista :: [Double] -> [Double]
 retornosDiarioLista []  = []
@@ -77,9 +67,6 @@ mediaRetornoLista xs = foldl' (+) 0 xs / fromIntegral (length xs)
 produtoEscalarLista :: [Double] -> [Double] -> Double
 produtoEscalarLista ws rs = sum (zipWith (*) ws rs)
 
--- ============================================================
--- UTILITARIOS DE MEDICAO (Parte 3)
--- ============================================================
 
 timeIt :: Double -> IO Double
 timeIt x = do
@@ -102,9 +89,6 @@ pesosSimulados n = replicate n (1.0 / fromIntegral n)
 retornosSimulados :: Int -> [Double]
 retornosSimulados n = take n (cycle [0.0092, 0.0068, 0.0086])
 
--- ============================================================
--- DEMONSTRACAO (Partes 1 e 2)
--- ============================================================
 
 demonstracao :: IO ()
 demonstracao = do
@@ -127,9 +111,6 @@ demonstracao = do
   putStrLn "(3) Produto escalar:"
   printf "%.6f (%.4f%%)\n" (produtoEscalarLista pesosLista retornosMediosLista) (produtoEscalarLista pesosLista retornosMediosLista * 100)
 
--- ============================================================
--- PARTE 3 - COMPARATIVO DE DESEMPENHO
--- ============================================================
 
 compararDesempenho :: IO ()
 compararDesempenho = do
@@ -192,9 +173,7 @@ compararDesempenho = do
   putStrLn "  zipWith e foldl' sao mais rapidas em Haskell devido"
   putStrLn "  a fusao de operacoes e otimizacao nativa do compilador."
 
--- ============================================================
--- MAIN
--- ============================================================
+
 
 main :: IO ()
 main = do
